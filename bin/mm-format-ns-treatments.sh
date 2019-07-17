@@ -24,7 +24,7 @@ oref0-normalize-temps $HISTORY \
     | .created_at = if .created_at then .created_at else .timestamp end
     | .enteredBy = "openaps://medtronic/'$model'"
     | if .glucose and (.glucoseType | not) and .glucose > 0 then .glucoseType = .enteredBy else . end
-    | .eventType = if .eventType then .eventType else "Note" end
+    | .eventType = if .eventType then .eventType else if ._type == "Battery" then "Pump Battery Change" else "Note" end
     | if ._type == "AlarmSensor" and .alarm_description then .notes = .alarm_description else . end
     | ( if .notes then .notes else "" end ) as $note
     | if ( .eventType == "Note" ) and ( .alarm_description | not ) then .notes = ( [ ._type, "'" $model "'", $note ] | join("") ) else . end
